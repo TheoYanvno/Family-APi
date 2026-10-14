@@ -1,193 +1,28 @@
-<!-- hide -->
 # Family Static API
-<!-- endhide -->
-The Jackson Family needs a static API! We need to build the *data structures* and create API endpoint to interact with it using Postman.
 
-## 💻 Installation
+A **Python Flask** REST API that manages members of the "Jackson" family using a custom class instead of a database.
 
-1. Open the project [with gitpod by clicking here](https://gitpod.io#https://github.com/breatheco-de/exercise-family-static-api), or clone it locally if you need. 
+**Tech:** Python · Flask · object-oriented data structure · Postman for testing
 
-2. Install the project dependencies by running `$ pipenv install`.
+## How it works
 
-3. Get inside the virtual environment by running `$ pipenv shell`
-
-4. Start the server by running `$ pipenv run start`
-
-5. Test your code by running `$ pipenv run test`
-
-## ✅ Automatic grading
-
-Test your code by running `$ pipenv run test`
-
-## 📝 Instructions
-
-1) Create the code needed to implement the API endpoints described further below.  
-
-2) The only two files you have to edit are:  
-
-- `src/datastructure.py`: Contains the class with the rules on how to manage the fammily members.  
-- `src/app.py`: Contains the API, it uses the Family as datastructure. 
-	
-3) We have prepared a set of automated tests that will give you an idea if your code is correct, run the tests by typing `$ pipenv run test` on the command line.  
-
-## Data structures
-
-Every **member** of the Jackson family must be a dictionary - equivalent of [Objects Literals in JS](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects) - and have these values:
-
-```python
-    + id: Int
-    + first_name: String
-    + last_name: String (Always Jackson)
-    + age: Int > 0
-    + lucky_numbers: Array of int
-```
-The **family** data-structure will be a class with the following structure:
-
-```python
-class Family:
-
-    def __init__(self, last_name):
-        self.last_name = last_name
-        # example list of members
-        self._members = [{
-            "id": self._generateId(),
-            "first_name": "John",
-            "last_name": last_name
-        }]
-
-    # read-only: Use this method to generate random members ID's when adding members into the list
-    def _generateId(self):
-        return random.randint(0, 99999999) //import random 
-
-    def add_member(self, member):
-        ## you have to implement this method
-        ## append the member to the list of _members
-        pass
-
-    def delete_member(self, id):
-        ## you have to implement this method
-        ## loop the list and delete the member with the given id
-        pass
-
-    def update_member(self, id, member):
-        ## you have to implement this method
-        ## loop the list and replace the member with the given id
-        pass
-
-    def get_member(self, id):
-        ## you have to implement this method
-        ## loop all the members and return the one with the given id
-        pass
-
-    def get_all_members(self):
-        return self._members
-```
-
-Note: don't forget to Initialize the class: `jackson_family = FamilyStructure('Jackson')` *before* the routes.
-
-## These are the initial Family Members
-
-```md
-John Jackson
-33 Years old
-Lucky Numbers: 7, 13, 22
-
-Jane Jackson
-35 Years old
-Lucky Numbers: 10, 14, 3
-
-Jimmy Jackson
-5 Years old
-Lucky Numbers: 1
-```
+- `FamilyStructure` class ([`src/datastructures.py`](src/datastructures.py)) holds members in a private list and exposes `add_member`, `delete_member`, `get_member` and `get_all_members`, generating an ID for each new member
+- Flask routes ([`src/app.py`](src/app.py)) call those methods and return JSON
 
 ## Endpoints
 
-This API must have 4 endpoints. They all return JSON:
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/members` | All family members |
+| GET | `/member/<id>` | One member |
+| POST | `/member` | Add a member: `{ "first_name": "Tommy", "age": 23, "lucky_number": [34, 65] }` |
+| DELETE | `/member/<id>` | Remove a member |
 
-### 1) Get all family members:
+## Run it
 
-Which returns all members of the family.
-
-```md
-GET /members
-
-status_code: 200 if success. 400 if bad request (wrong info) screw up, 500 if the server encounter an error
-
-RESPONSE BODY (content-type: application/json):
-
-[], // List of members.
-
+```bash
+pipenv install
+pipenv run start     # http://localhost:3000
 ```
 
-### 2) Retrieve one member
-
-Which returns the member of the family where `id == member_id`.
-
-```md
-GET /member/<int:member_id>
-
-RESPONSE (content_type: application/json):
-
-status_code: 200 if success. 400 if bad request (wrong info) screw up, 500 if the server encounter an error
-
-body: //the member's json object
-
-{
-    "id": Int,
-    "first_name": String,
-    "age": Int,
-    "lucky_numbers": List
-}
-
-```
-
-### 3) Add (POST) new member
-
-Which adds a new member to the family data structure.
-
-```md
-POST /member
-
-REQUEST BODY (content_type: application/json):
-
-{
-    first_name: String,
-    age: Int,
-    lucky_numbers: [],
-    id: Int *optional
-}
-
-RESPONSE (content_type: application/json):
-
-status_code: 200 if success. 400 if bad request (wrong info) screw up, 500 if the server encounter an error
-
-body: empty
-```
-
-Keep in mind that POST request data dictionary may contain a key and a value for this new member `id`.
-- If it does not, your API should randomly generate one when adding as a family members.
-- If it does include it, then that is the value to be used for such end.
-
-### 4) DELETE one member
-
-Which deletes a family member with `id == member_id`
-
-```md
-DELETE /member/<int:member_id>
-
-RESPONSE (content_type: application/json):
-
-status_code: 200 if success. 400 if bad request (wrong info) screw up, 500 if the server encounter an error
-
-body: {
-    done: True
-}    
-
-```
-
-## Requirements
-
-- All requests and reponses should be in content/type: application/json
-- Response codes must be `200` for success, `400` for bad request or `404` for not found.
-- This exercises do not include a database, everything must be done in Runtime (RAM).
+Built as part of the 4Geeks Academy Full Stack Software Development program (2023), starting from the academy's exercise template (original notes in [`docs/BOILERPLATE_README.md`](docs/BOILERPLATE_README.md)).
